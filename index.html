@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <!-- Meta viewport giúp trang hiển thị đúng trên thiết bị di động -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tính Số Ngày Checkin - Checkout</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Tính Số Ngày Checkin - Checkout</h2>
+    
+    <!-- Phần Checkin -->
+    <div>
+      <h3>Checkin</h3>
+      <label for="checkin-date">Ngày checkin:</label>
+      <input type="date" id="checkin-date">
+      
+      <label for="checkin-time">Giờ checkin (24h - HH:MM):</label>
+      <input type="time" id="checkin-time" value="20:00">
+    </div>
+    
+    <!-- Phần Checkout -->
+    <div>
+      <h3>Checkout</h3>
+      <label for="checkout-date">Ngày checkout:</label>
+      <input type="date" id="checkout-date">
+      
+      <label for="checkout-time">Giờ checkout (24h - HH:MM):</label>
+      <input type="time" id="checkout-time" value="12:00">
+    </div>
+    
+    <button onclick="calculate()">Tính</button>
+    
+    <div class="result" id="result">Kết quả: </div>
+  </div>
+  
+  <script>
+    function calculate() {
+      // Lấy dữ liệu từ các ô nhập
+      var checkinDateStr = document.getElementById("checkin-date").value;
+      var checkoutDateStr = document.getElementById("checkout-date").value;
+      var checkinTimeStr = document.getElementById("checkin-time").value;
+      var checkoutTimeStr = document.getElementById("checkout-time").value;
+      
+      if (!checkinDateStr || !checkoutDateStr || !checkinTimeStr || !checkoutTimeStr) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+      
+      // Chuyển đổi chuỗi ngày sang đối tượng Date
+      var checkinDate = new Date(checkinDateStr);
+      var checkoutDate = new Date(checkoutDateStr);
+      
+      // Kiểm tra nếu ngày checkout trước ngày checkin
+      if (checkoutDate < checkinDate) {
+        alert("Ngày checkout không được trước ngày checkin!");
+        return;
+      }
+      
+      // Tính số ngày cơ bản: (Ngày checkout - Ngày checkin) - 1
+      var oneDay = 24 * 60 * 60 * 1000;
+      var diffDays = Math.round((checkoutDate - checkinDate) / oneDay);
+      var baseDays = diffDays - 1;
+      
+      // Phân tích giờ checkin và checkout (định dạng HH:MM)
+      var checkinParts = checkinTimeStr.split(":");
+      var checkoutParts = checkoutTimeStr.split(":");
+      var checkinHour = parseInt(checkinParts[0], 10);
+      var checkinMinute = parseInt(checkinParts[1], 10);
+      var checkoutHour = parseInt(checkoutParts[0], 10);
+      var checkoutMinute = parseInt(checkoutParts[1], 10);
+      
+      var checkinTimeVal = checkinHour + checkinMinute / 60;
+      var checkoutTimeVal = checkoutHour + checkoutMinute / 60;
+      
+      // Điều chỉnh cho checkin: trước 21h cộng thêm 1 ngày, sau 21h cộng thêm 0.5 ngày
+      var extraCheckin = (checkinTimeVal < 21) ? 1.0 : 0.5;
+      
+      // Điều chỉnh cho checkout:
+      // - Nếu checkout trước 12h: cộng 0 ngày
+      // - Nếu checkout từ 12h đến trước 21h: cộng 0.5 ngày
+      // - Nếu checkout sau 21h: cộng 1 ngày
+      var extraCheckout = (checkoutTimeVal < 12) ? 0.0 : (checkoutTimeVal < 21 ? 0.5 : 1.0);
+      
+      // Tính tổng số ngày
+      var totalDays = baseDays + extraCheckin + extraCheckout;
+      
+      // Hiển thị kết quả
+      document.getElementById("result").textContent = "Kết quả: " + totalDays + " ngày";
+    }
+  </script>
+</body>
+</html>
