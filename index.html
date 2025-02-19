@@ -35,7 +35,7 @@
       border-radius: 3px;
       font-size: 16px;
     }
-    /* Cập nhật thông báo giờ với màu xanh dương đậm */
+    /* Thông báo giờ hiển thị với màu xanh dương đậm */
     #checkin-message, #checkout-message {
       margin-top: 5px;
       font-size: 14px;
@@ -51,14 +51,21 @@
       width: 48%;
       padding: 10px;
       font-size: 16px;
-      background-color: #007BFF;
       color: #fff;
       border: none;
       border-radius: 3px;
       cursor: pointer;
     }
+    /* Nút Tính sử dụng màu xanh đậm */
+    #calculate-btn {
+      background-color: #007BFF;
+    }
+    /* Nút Xuất ban đầu hiển thị màu nhạt */
+    #export-btn {
+      background-color: #B0C4DE;
+    }
     button:hover {
-      background-color: #0056b3;
+      opacity: 0.9;
     }
     /* Kết quả hiển thị với chữ đỏ đậm */
     .result {
@@ -98,14 +105,17 @@
     
     <!-- Nút Tính và Xuất -->
     <div class="button-container">
-      <button onclick="calculate()">Tính</button>
-      <button onclick="exportData()">Xuất</button>
+      <button id="calculate-btn" onclick="calculate()">Tính</button>
+      <button id="export-btn" onclick="exportData()">Xuất</button>
     </div>
     
     <div class="result" id="result">Kết quả: </div>
   </div>
   
   <script>
+    // Biến để kiểm tra xem đã tính kết quả hay chưa
+    var calculated = false;
+    
     // Hàm cập nhật thông báo dựa vào giá trị giờ nhập của checkin
     function updateCheckinMessage() {
       var timeStr = document.getElementById("checkin-time").value;
@@ -162,7 +172,7 @@
       var checkoutTimeStr = document.getElementById("checkout-time").value;
       
       if (!checkinDateStr || !checkoutDateStr || !checkinTimeStr || !checkoutTimeStr) {
-        alert("Vui lòng nhập đầy đủ thông tin!");
+        alert("NGU chưa nhập đầy đủ thông tin sao tính !");
         return;
       }
       
@@ -195,10 +205,20 @@
       var totalDays = baseDays + extraCheckin + extraCheckout;
       
       document.getElementById("result").textContent = "Kết quả: " + totalDays + " ngày";
+      
+      // Đánh dấu đã tính kết quả và cập nhật màu nút Xuất sang màu xanh đậm
+      calculated = true;
+      document.getElementById("export-btn").style.backgroundColor = "#007BFF";
     }
     
     // Hàm xuất dữ liệu và kết quả ra trang HTML khác
     function exportData() {
+      // Nếu chưa tính kết quả, hiển thị thông báo
+      if (!calculated) {
+        alert("ĐỒ NGU, bấm Tính ra kết quả trước rồi mới bấm Xuất !");
+        return;
+      }
+      
       var checkinDate = document.getElementById("checkin-date").value;
       var checkinTime = document.getElementById("checkin-time").value;
       var checkoutDate = document.getElementById("checkout-date").value;
