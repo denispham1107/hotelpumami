@@ -184,19 +184,35 @@
         return;
       }
       
+      // Nếu ngày checkin và checkout cùng 1 ngày, kiểm tra giờ checkout phải lớn hơn giờ checkin
+      if (checkinDate.getTime() === checkoutDate.getTime()) {
+        var checkinParts = checkinTimeStr.split(":");
+        var checkoutParts = checkoutTimeStr.split(":");
+        var checkinHour = parseInt(checkinParts[0], 10);
+        var checkinMinute = parseInt(checkinParts[1], 10);
+        var checkoutHour = parseInt(checkoutParts[0], 10);
+        var checkoutMinute = parseInt(checkoutParts[1], 10);
+        var checkinTimeVal = checkinHour + checkinMinute / 60.0;
+        var checkoutTimeVal = checkoutHour + checkoutMinute / 60.0;
+        if (checkoutTimeVal <= checkinTimeVal) {
+          alert("NGU, cùng 1 ngày giờ checkout phải lớn hơn giờ checkin !");
+          return;
+        }
+      }
+      
       // Tính số ngày cơ bản: (Ngày checkout - Ngày checkin) - 1
       var oneDay = 24 * 60 * 60 * 1000;
       var diffDays = Math.round((checkoutDate - checkinDate) / oneDay);
       var baseDays = diffDays - 1;
       
+      // Phân tích giờ checkin và checkout (sẽ phân tích lại, vì trong trường hợp cùng 1 ngày đã được kiểm tra)
       var checkinParts = checkinTimeStr.split(":");
+      var checkoutParts = checkoutTimeStr.split(":");
       var checkinHour = parseInt(checkinParts[0], 10);
       var checkinMinute = parseInt(checkinParts[1], 10);
-      var checkinTimeVal = checkinHour + checkinMinute / 60.0;
-      
-      var checkoutParts = checkoutTimeStr.split(":");
       var checkoutHour = parseInt(checkoutParts[0], 10);
       var checkoutMinute = parseInt(checkoutParts[1], 10);
+      var checkinTimeVal = checkinHour + checkinMinute / 60.0;
       var checkoutTimeVal = checkoutHour + checkoutMinute / 60.0;
       
       var extraCheckin = (checkinTimeVal < 21) ? 1.0 : 0.5;
