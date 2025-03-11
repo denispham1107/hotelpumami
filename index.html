@@ -90,7 +90,6 @@
       <label for="checkin-time">Giờ checkin (24h - HH:MM):</label>
       <input type="time" id="checkin-time" value="20:00">
       <div id="checkin-message"></div>
-      <br>
     </div>
     
     <!-- Phần Checkout -->
@@ -102,7 +101,6 @@
       <label for="checkout-time">Giờ checkout (24h - HH:MM):</label>
       <input type="time" id="checkout-time" value="12:00">
       <div id="checkout-message"></div>
-      <br>
     </div>
     
     <!-- Nút Tính và Xuất -->
@@ -115,16 +113,10 @@
   </div>
   
   <script>
+    // Biến để kiểm tra xem đã tính kết quả hay chưa
     var calculated = false;
     
-    // Hàm định dạng ngày theo "DD-MM-YYYY"
-    function formatDate(date) {
-      var d = date.getDate();
-      var m = date.getMonth() + 1;
-      var y = date.getFullYear();
-      return (d < 10 ? '0' + d : d) + '-' + (m < 10 ? '0' + m : m) + '-' + y;
-    }
-    
+    // Hàm cập nhật thông báo dựa vào giá trị giờ nhập của checkin
     function updateCheckinMessage() {
       var timeStr = document.getElementById("checkin-time").value;
       var checkinMessageElem = document.getElementById("checkin-message");
@@ -143,6 +135,7 @@
       }
     }
     
+    // Hàm cập nhật thông báo dựa vào giá trị giờ nhập của checkout
     function updateCheckoutMessage() {
       var timeStr = document.getElementById("checkout-time").value;
       var checkoutMessageElem = document.getElementById("checkout-message");
@@ -163,12 +156,15 @@
       }
     }
     
+    // Gắn sự kiện thay đổi cho ô giờ để cập nhật thông báo
     document.getElementById("checkin-time").addEventListener("input", updateCheckinMessage);
     document.getElementById("checkout-time").addEventListener("input", updateCheckoutMessage);
     
+    // Cập nhật thông báo ban đầu khi load trang
     updateCheckinMessage();
     updateCheckoutMessage();
     
+    // Hàm tính tổng số ngày dựa vào ngày và giờ checkin/checkout
     function calculate() {
       var checkinDateStr = document.getElementById("checkin-date").value;
       var checkoutDateStr = document.getElementById("checkout-date").value;
@@ -188,7 +184,7 @@
         return;
       }
       
-      // Nếu cùng 1 ngày, giờ checkout phải lớn hơn giờ checkin
+      // Nếu ngày checkin và checkout cùng 1 ngày, kiểm tra giờ checkout phải lớn hơn giờ checkin
       if (checkinDate.getTime() === checkoutDate.getTime()) {
         var checkinParts = checkinTimeStr.split(":");
         var checkoutParts = checkoutTimeStr.split(":");
@@ -204,10 +200,12 @@
         }
       }
       
+      // Tính số ngày cơ bản: (Ngày checkout - Ngày checkin) - 1
       var oneDay = 24 * 60 * 60 * 1000;
       var diffDays = Math.round((checkoutDate - checkinDate) / oneDay);
       var baseDays = diffDays - 1;
       
+      // Phân tích giờ checkin và checkout (sẽ phân tích lại, vì trong trường hợp cùng 1 ngày đã được kiểm tra)
       var checkinParts = checkinTimeStr.split(":");
       var checkoutParts = checkoutTimeStr.split(":");
       var checkinHour = parseInt(checkinParts[0], 10);
@@ -224,71 +222,55 @@
       
       document.getElementById("result").textContent = "Kết quả: " + totalDays + " ngày";
       
+      // Đánh dấu đã tính kết quả và cập nhật màu nút Xuất sang màu xanh đậm
       calculated = true;
       document.getElementById("export-btn").style.backgroundColor = "#007BFF";
     }
     
+    // Hàm xuất dữ liệu và kết quả ra trang HTML khác
     function exportData() {
+      // Nếu chưa tính kết quả, hiển thị thông báo
       if (!calculated) {
         alert("ĐỒ NGU, bấm Tính ra kết quả trước rồi mới bấm Xuất !");
         return;
       }
       
-      var checkinDateStr = document.getElementById("checkin-date").value;
-      var checkoutDateStr = document.getElementById("checkout-date").value;
+      var checkinDate = document.getElementById("checkin-date").value;
       var checkinTime = document.getElementById("checkin-time").value;
+      var checkoutDate = document.getElementById("checkout-date").value;
       var checkoutTime = document.getElementById("checkout-time").value;
       var checkinMsg = document.getElementById("checkin-message").innerText;
       var checkoutMsg = document.getElementById("checkout-message").innerText;
       var resultText = document.getElementById("result").innerText;
       
-      // Format ngày theo "DD-MM-YYYY" cho Checkin và Checkout
-      var checkinDateFormatted = formatDate(new Date(checkinDateStr));
-      var checkoutDateFormatted = formatDate(new Date(checkoutDateStr));
-      
-      // Tính các ngày ở giữa (không bao gồm ngày checkin và checkout) với định dạng DD-MM-YYYY
-      var middleDates = [];
-      var currentDate = new Date(checkinDateStr);
-      currentDate.setDate(currentDate.getDate() + 1);
-      var checkoutDate = new Date(checkoutDateStr);
-      while (currentDate < checkoutDate) {
-        middleDates.push(formatDate(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-      
-      var exportResultText = resultText.replace("Kết quả:", "Tổng số ngày bé ở :");
-      
       var exportWindow = window.open("", "_blank");
       var content = `
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pet Mobile tạm tính số ngày ở Hotel cho 1 Bé</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-    .container { max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; }
-    p { font-size: 16px; line-height: 1.5; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Pet Mobile tạm tính số ngày ở Hotel cho 1 Bé</h2>
-    <p><strong>Ngày Checkin:</strong> ${checkinDateFormatted}</p>
-    <p><strong>Giờ Checkin:</strong> ${checkinTime}</p>
-    <p><strong>Thông báo Checkin:</strong> ${checkinMsg}</p>
-    <br>
-    <p><strong>Ngày Checkout:</strong> ${checkoutDateFormatted}</p>
-    <p><strong>Giờ Checkout:</strong> ${checkoutTime}</p>
-    <p><strong>Thông báo Checkout:</strong> ${checkoutMsg}</p>
-    <br>
-    <p><strong>Các ngày ở giữa:</strong> ${middleDates.join(", ")} : ${middleDates.length} ngày</p>
-    <p style="color: red;"><strong>${exportResultText}</strong></p>
-  </div>
-</body>
-</html>
+      <!DOCTYPE html>
+      <html lang="vi">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Kết quả Xuất</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+          .container { max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+          h2 { text-align: center; }
+          p { font-size: 16px; line-height: 1.5; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h2>Kết quả Xuất</h2>
+          <p><strong>Ngày Checkin:</strong> ${checkinDate}</p>
+          <p><strong>Giờ Checkin:</strong> ${checkinTime}</p>
+          <p><strong>Thông báo Checkin:</strong> ${checkinMsg}</p>
+          <p><strong>Ngày Checkout:</strong> ${checkoutDate}</p>
+          <p><strong>Giờ Checkout:</strong> ${checkoutTime}</p>
+          <p><strong>Thông báo Checkout:</strong> ${checkoutMsg}</p>
+          <p><strong>${resultText}</strong></p>
+        </div>
+      </body>
+      </html>
       `;
       exportWindow.document.write(content);
       exportWindow.document.close();
