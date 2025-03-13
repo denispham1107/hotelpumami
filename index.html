@@ -170,9 +170,9 @@
         if (timeVal < 12) {
           checkoutMessageElem.innerText = "Bé đón trước 12h không tính thêm ngày";
         } else if (timeVal < 21) {
-          checkoutMessageElem.innerText = "Bé đón trước 21h tính thêm 1/2 ngày";
+          checkoutMessageElem.innerText = "Bé đón từ 12h và trước 21h tính 1/2 ngày";
         } else {
-          checkoutMessageElem.innerText = "Bé đón từ 21h tính thêm 1 ngày";
+          checkoutMessageElem.innerText = "Bé đón từ 21h tính 1 ngày";
         }
       } else {
         checkoutMessageElem.innerText = "";
@@ -302,7 +302,7 @@
     <p><strong>Giờ Checkout:</strong> ${checkoutTime}</p>
     <p><strong>Thông báo Checkout:</strong> ${checkoutMsg}</p>
     <br>
-    <p><strong>Số ngày bé ở, giữa ngày Checkin và ngày Checkout :</strong> ${middleDates.join(", ")} : ${middleDates.length} ngày</p>
+    <p><strong>Số ngày ở giữa ngày Checkin và ngày Checkout :</strong> ${middleDates.join(", ")} : ${middleDates.length} ngày</p>
     <p style="color: red;"><strong>${exportResultText}</strong></p>
   </div>
 </body>
