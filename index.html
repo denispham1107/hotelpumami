@@ -117,7 +117,7 @@
   <script>
     var calculated = false;
     
-    // Hàm định dạng ngày theo "DD-MM-YYYY"
+    // Hàm định dạng ngày theo "DD-MM-YYYY" cho Checkin và Checkout
     function formatDate(date) {
       var d = date.getDate();
       var m = date.getMonth() + 1;
@@ -125,9 +125,25 @@
       return (d < 10 ? '0' + d : d) + '-' + (m < 10 ? '0' + m : m) + '-' + y;
     }
     
+    // Hàm định dạng ngày theo "DD-MM" (chỉ hiển thị ngày-tháng)
+    function formatDayMonth(date) {
+      var d = date.getDate();
+      var m = date.getMonth() + 1;
+      return (d < 10 ? '0' + d : d) + '-' + (m < 10 ? '0' + m : m);
+    }
+    
+    // Cập nhật thông báo Checkin: nếu checkin và checkout cùng ngày thì không hiển thị thông báo
     function updateCheckinMessage() {
-      var timeStr = document.getElementById("checkin-time").value;
+      var checkinDate = document.getElementById("checkin-date").value;
+      var checkoutDate = document.getElementById("checkout-date").value;
       var checkinMessageElem = document.getElementById("checkin-message");
+      var timeStr = document.getElementById("checkin-time").value;
+      
+      if (checkinDate && checkoutDate && checkinDate === checkoutDate) {
+        checkinMessageElem.innerText = "";
+        return;
+      }
+      
       if (timeStr) {
         var parts = timeStr.split(":");
         var hour = parseInt(parts[0], 10);
@@ -165,6 +181,8 @@
     
     document.getElementById("checkin-time").addEventListener("input", updateCheckinMessage);
     document.getElementById("checkout-time").addEventListener("input", updateCheckoutMessage);
+    document.getElementById("checkin-date").addEventListener("input", updateCheckinMessage);
+    document.getElementById("checkout-date").addEventListener("input", updateCheckinMessage);
     
     updateCheckinMessage();
     updateCheckoutMessage();
@@ -246,13 +264,13 @@
       var checkinDateFormatted = formatDate(new Date(checkinDateStr));
       var checkoutDateFormatted = formatDate(new Date(checkoutDateStr));
       
-      // Tính các ngày ở giữa (không bao gồm ngày checkin và checkout) với định dạng DD-MM-YYYY
+      // Tính các ngày ở giữa (không bao gồm ngày checkin và checkout) với định dạng DD-MM (chỉ hiển thị ngày-tháng)
       var middleDates = [];
       var currentDate = new Date(checkinDateStr);
       currentDate.setDate(currentDate.getDate() + 1);
       var checkoutDate = new Date(checkoutDateStr);
       while (currentDate < checkoutDate) {
-        middleDates.push(formatDate(currentDate));
+        middleDates.push(formatDayMonth(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
       }
       
@@ -284,7 +302,7 @@
     <p><strong>Giờ Checkout:</strong> ${checkoutTime}</p>
     <p><strong>Thông báo Checkout:</strong> ${checkoutMsg}</p>
     <br>
-    <p><strong>Các ngày ở giữa:</strong> ${middleDates.join(", ")} : ${middleDates.length} ngày</p>
+    <p><strong>Số ngày bé ở, giữa ngày Checkin và ngày Checkout :</strong> ${middleDates.join(", ")} : ${middleDates.length} ngày</p>
     <p style="color: red;"><strong>${exportResultText}</strong></p>
   </div>
 </body>
