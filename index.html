@@ -152,7 +152,7 @@
         if (timeVal < 21) {
           checkinMessageElem.innerText = "Bé vô trước 21h tính 1 ngày";
         } else {
-          checkinMessageElem.innerText = "Bé vô từ 21h tính 1/2 ngày";
+          checkinMessageElem.innerText = "Bé vô từ 21h tính 0.5 ngày";
         }
       } else {
         checkinMessageElem.innerText = "";
@@ -170,7 +170,7 @@
         if (timeVal < 12) {
           checkoutMessageElem.innerText = "Bé đón trước 12h không tính thêm ngày";
         } else if (timeVal < 21) {
-          checkoutMessageElem.innerText = "Bé đón từ 12h và trước 21h tính 1/2 ngày";
+          checkoutMessageElem.innerText = "Bé đón từ 12h và trước 21h tính 0.5 ngày";
         } else {
           checkoutMessageElem.innerText = "Bé đón từ 21h tính 1 ngày";
         }
