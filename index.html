@@ -18,9 +18,11 @@
       padding: 20px;
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: left; /* Nội dung căn lề bên trái */
     }
     h2, h3 {
-      text-align: center;
+      margin: 5px 0;
+      /* Xóa bỏ text-align center để hiển thị lề trái */
     }
     label {
       display: block;
@@ -56,24 +58,21 @@
       border-radius: 3px;
       cursor: pointer;
     }
-    /* Nút Tính sử dụng màu xanh đậm */
     #calculate-btn {
       background-color: #007BFF;
     }
-    /* Nút Xuất ban đầu hiển thị màu nhạt */
     #export-btn {
       background-color: #B0C4DE;
     }
     button:hover {
       opacity: 0.9;
     }
-    /* Kết quả hiển thị với chữ đỏ đậm */
     .result {
       margin-top: 20px;
       font-size: 18px;
       font-weight: bold;
-      text-align: center;
       color: red;
+      text-align: left; /* Kết quả căn lề bên trái */
     }
   </style>
 </head>
@@ -285,15 +284,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pet Mobile tạm tính số ngày ở Hotel cho 1 Bé</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-    .container { max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; }
-    p { font-size: 16px; line-height: 1.5; }
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      background-color: #f5f5f5; 
+      text-align: left; 
+    }
+    .container { 
+      max-width: 600px; 
+      margin: auto; 
+      background-color: #fff; 
+      padding: 20px; 
+      border-radius: 5px; 
+      box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    }
+    h2 { 
+      margin: 5px 0; 
+      text-align: center;	  
+    }
+    p { 
+      font-size: 16px; 
+      line-height: 1.5; 
+      text-align: left; 
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Pet Mobile tạm tính số ngày ở Hotel cho 1 Bé</h2>
+    <h2>Pet Mobile - Dịch Vụ Thú Cưng Tại Nhà</h2>
+    <h2>Hotline : 0909463601</h2>
+    <h2>Bảng tính số ngày lưu trú cho 1 bé</h2>
     <p><strong>Ngày Checkin:</strong> ${checkinDateFormatted}</p>
     <p><strong>Giờ Checkin:</strong> ${checkinTime}</p>
     <p><strong>Thông báo Checkin:</strong> ${checkinMsg}</p>
